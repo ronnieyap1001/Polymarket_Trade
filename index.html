@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Jodoo implementation Singapore &amp; Malaysia — Velo Working</title>
+
+<!-- SEO -->
+<meta name="description" content="Independent Jodoo implementation specialist for SMEs in Singapore and Malaysia. You work directly with the engineer who designs and builds the system. Fixed scope, fixed fee, no lock-in." />
+<meta name="author" content="Velo Working Pte. Ltd." />
+<link rel="canonical" href="https://www.veloworking.com/" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Jodoo implementation, done by the engineer who builds it." />
+<meta property="og:description" content="Independent Jodoo implementation specialist for Singapore &amp; Malaysia SMEs. You deal with the person doing the work, not a sales team." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.veloworking.com/" />
+<meta property="og:site_name" content="Velo Working" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Jodoo implementation, done by the engineer who builds it." />
+<meta name="twitter:description" content="Independent Jodoo implementation specialist for Singapore &amp; Malaysia SMEs. Direct access to the engineer. Fixed scope, fixed fee, no lock-in." />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="asset/favicon.svg" />
+<link rel="apple-touch-icon" href="asset/favicon.svg" />
+
+<!-- Structured data: ProfessionalService + Person -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://www.veloworking.com/#business",
+      "name": "Velo Working Pte. Ltd.",
+      "alternateName": "Velo Working",
+      "url": "https://www.veloworking.com",
+      "email": "ronnie.yap@veloworking.com",
+      "telephone": "+65 9894 3004",
+      "description": "Independent Jodoo implementation specialist serving SMEs in Singapore, Malaysia and Brunei. Fixed-scope, fixed-fee builds. No lock-in.",
+      "areaServed": [
+        { "@type": "Country", "name": "Singapore" },
+        { "@type": "Country", "name": "Malaysia" },
+        { "@type": "Country", "name": "Brunei" }
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "540 Sims Ave #03-05",
+        "addressLocality": "Singapore",
+        "postalCode": "387603",
+        "addressCountry": "SG"
+      },
+      "founder": { "@id": "https://www.veloworking.com/#ronnie" },
+      "employee": { "@id": "https://www.veloworking.com/#ronnie" },
+      "knowsAbout": [
+        "Jodoo",
+        "no-code workflow",
+        "operations engineering",
+        "manufacturing operations",
+        "procurement",
+        "inventory management",
+        "production tracking",
+        "quality control",
+        "maintenance",
+        "field service"
+      ],
+      "priceRange": "SGD 800 – 30,000"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.veloworking.com/#ronnie",
+      "name": "Ronnie Yap",
+      "jobTitle": "Independent Jodoo Implementation Specialist",
+      "worksFor": { "@id": "https://www.veloworking.com/#business" },
+      "email": "ronnie.yap@veloworking.com",
+      "telephone": "+65 9894 3004",
+      "url": "https://www.veloworking.com/"
+    }
+  ]
+}
+</script>
+
+<style>
+/* =================================================================
+   DESIGN SYSTEM — Paper / Ink, Electric Blue as surgical accent
+================================================================= */
+:root {
+  --paper:       #F7F5F0;
+  --paper-soft:  #EDEAE2;
+  --ink:         #0A0A0A;
+  --ink-2:       #4A4A4A;
+  --ink-3:       #6E6E6E;
+  --rule:        #DAD6CB;
+  --accent:      #1317E4;   /* Electric Blue — links, marks, no fills */
+
+  --r-tile:    20px;
+  --r-pill:    980px;
+
+  --f: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --gut: clamp(20px, 4vw, 40px);
+  --max: 1100px;
+  --tile-gap: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f);
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: -0.018em;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+p { margin: 0 0 1em; }
+p:last-child { margin: 0; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding-inline: var(--gut); }
+
+/* Type scale */
+h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.035em; line-height: 1.08; color: var(--ink); }
+h1 { font-size: clamp(36px, 5.6vw, 64px); letter-spacing: -0.04em; }
+h2 { font-size: clamp(28px, 3.8vw, 44px); }
+h3 { font-size: clamp(20px, 2.1vw, 26px); letter-spacing: -0.025em; line-height: 1.2; }
+h4 { font-size: 17px; letter-spacing: -0.02em; line-height: 1.25; font-weight: 600; }
+
+.lead {
+  font-size: clamp(18px, 1.6vw, 21px);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.muted { color: var(--ink-2); }
+
+/* Buttons — outlined ink, accent for primary */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 22px; border-radius: var(--r-pill);
+  font-size: 16px; font-weight: 500;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  border: 1px solid var(--ink);
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+.btn--primary { background: var(--ink); color: var(--paper); }
+.btn--primary:hover { background: var(--accent); border-color: var(--accent); text-decoration: none; }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
+
+.link {
+  color: var(--accent); font-weight: 500;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.link::after { content: '→'; transform: translateY(0); }
+
+/* =================================================================
+   NAV — thin top bar, paper background, no blur tricks
+================================================================= */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(247, 245, 240, 0.92);
+  border-bottom: 1px solid var(--rule);
+  backdrop-filter: saturate(160%) blur(10px);
+  -webkit-backdrop-filter: saturate(160%) blur(10px);
+}
+.nav__inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: var(--gut);
+  gap: 16px;
+}
+.nav__brand {
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 100%;
+}
+.nav__brand-svg { height: 20px; width: auto; display: block; }
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  border-radius: 999px;
+  transition: background 140ms ease, color 140ms ease;
+}
+.nav__link:hover { color: var(--ink); background: var(--paper-soft); text-decoration: none; }
+.nav__link--cta {
+  color: var(--paper);
+  background: var(--ink);
+}
+.nav__link--cta:hover { background: var(--accent); color: var(--paper); }
+
+.nav__toggle {
+  display: none;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  color: var(--ink);
+}
+.nav__toggle svg { width: 20px; height: 20px; }
+
+@media (max-width: 760px) {
+  .nav__links { display: none; }
+  .nav__toggle { display: inline-flex; }
+  .nav.nav--open .nav__links {
+    position: absolute; top: 56px; left: 0; right: 0;
+    flex-direction: column; align-items: stretch;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    padding: 8px var(--gut) 16px;
+    display: flex;
+    gap: 0;
+  }
+  .nav.nav--open .nav__link {
+    padding: 14px 4px;
+    border-radius: 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 16px;
+    justify-content: flex-start;
+  }
+  .nav.nav--open .nav__link--cta {
+    margin-top: 8px;
+    border-radius: 999px;
+    justify-content: center;
+    border-bottom: 0;
+  }
+}
+
+/* =================================================================
+   SECTIONS
+================================================================= */
+section { padding-block: clamp(56px, 8vw, 96px); }
+.section__head {
+  max-width: 720px;
+  margin: 0 auto clamp(32px, 4vw, 48px);
+}
+.section__head--center { text-align: center; }
+.section__head .eyebrow {
+  display: inline-block;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.section__head p { margin-top: 16px; color: var(--ink-2); font-size: 18px; line-height: 1.5; }
+
+/* =================================================================
+   HERO
+================================================================= */
+.hero { padding-block: clamp(64px, 9vw, 120px) clamp(40px, 6vw, 64px); }
+.hero__inner { max-width: 820px; }
+.hero__eyebrow {
+  display: inline-block;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+.hero h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+.hero h1 .mark {
+  background-image: linear-gradient(transparent 62%, rgba(19, 23, 228, 0.18) 62%);
+  background-repeat: no-repeat;
+  padding: 0 2px;
+}
+.hero__sub {
+  margin-top: 24px;
+  font-size: clamp(18px, 1.8vw, 22px);
+  line-height: 1.45;
+  color: var(--ink-2);
+  max-width: 640px;
+}
+.hero__ctas {
+  margin-top: 32px;
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.hero__meta {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; gap: 8px 28px;
+  font-size: 14px; color: var(--ink-3);
+}
+.hero__meta strong { color: var(--ink); font-weight: 600; }
+
+/* =================================================================
+   WHO YOU WORK WITH
+================================================================= */
+.who { background: var(--paper-soft); }
+.who__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: start;
+}
+@media (max-width: 760px) { .who__grid { grid-template-columns: 1fr; } }
+.who__body p { font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+.who__body p strong { color: var(--ink); font-weight: 600; }
+.who__trust {
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.who__list {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: 0;
+}
+.who__list li {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 14px;
+  font-size: 16px; line-height: 1.45;
+}
+.who__list li:last-child { border-bottom: 0; }
+.who__list li::before {
+  content: '—';
+  color: var(--accent);
+  font-weight: 600;
+}
+.who__list li strong { color: var(--ink); font-weight: 600; display: block; margin-bottom: 4px; }
+.who__list li span { color: var(--ink-2); }
+
+/* =================================================================
+   WHAT I DO — three outcomes
+================================================================= */
+.outcomes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--tile-gap);
+}
+@media (max-width: 760px) { .outcomes { grid-template-columns: 1fr; } }
+.outcome {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-tile);
+  padding: 32px;
+}
+.outcome__num {
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.outcome__problem {
+  font-size: 14px; line-height: 1.4;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.outcome__problem strong { color: var(--ink-2); font-weight: 500; }
+.outcome h3 {
+  font-size: 22px; letter-spacing: -0.025em; line-height: 1.2;
+  margin-bottom: 12px;
+}
+.outcome p { font-size: 15px; line-height: 1.55; color: var(--ink-2); margin: 0; }
+
+.areas {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+}
+.areas__label {
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 16px;
+}
+.areas__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px 32px;
+}
+.area {
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.area strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 2px; }
+
+/* =================================================================
+   WHO IT'S FOR
+================================================================= */
+.for { background: var(--paper-soft); }
+.for__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: start;
+}
+@media (max-width: 760px) { .for__grid { grid-template-columns: 1fr; } }
+.for__stats {
+  display: grid; gap: 16px;
+}
+.for__stat {
+  padding: 20px 24px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+}
+.for__stat-num {
+  font-size: 26px; font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.for__stat-label {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.for__industries {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.for__industries li {
+  padding: 8px 14px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--ink);
+}
+.for__geo {
+  margin-top: 16px;
+  font-size: 14px; color: var(--ink-2);
+}
+
+/* =================================================================
+   PRICING
+================================================================= */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--tile-gap);
+}
+@media (max-width: 760px) { .pricing-grid { grid-template-columns: 1fr; } }
+.pricing-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-tile);
+  padding: clamp(28px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+}
+.pricing-card--featured { border-color: var(--ink); }
+.pricing-card__badge {
+  display: inline-block;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.pricing-card__name {
+  font-size: 14px; font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.pricing-card__price {
+  font-size: 28px; font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.pricing-card__note {
+  margin-top: 10px;
+  font-size: 14px; color: var(--ink-2);
+  line-height: 1.45;
+}
+.pricing-card__desc {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 15px; line-height: 1.5;
+  color: var(--ink-2);
+  flex: 1;
+}
+.pricing-card__desc strong { color: var(--ink); font-weight: 600; }
+.pricing-card__cta { margin-top: 24px; }
+
+/* =================================================================
+   CONTACT / FOOTER
+================================================================= */
+.contact { background: var(--ink); color: var(--paper); }
+.contact h2 { color: var(--paper); }
+.contact__sub {
+  margin-top: 16px;
+  font-size: 18px;
+  color: rgba(247, 245, 240, 0.78);
+  max-width: 560px;
+}
+.contact__rows {
+  margin-top: 36px;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(247, 245, 240, 0.18);
+}
+.contact__row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 16px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(247, 245, 240, 0.18);
+  font-size: 16px;
+  align-items: baseline;
+}
+@media (max-width: 600px) {
+  .contact__row { grid-template-columns: 1fr; gap: 4px; padding: 18px 0; }
+}
+.contact__label {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(247, 245, 240, 0.6);
+  font-weight: 600;
+}
+.contact__value { color: var(--paper); font-size: 17px; }
+.contact__value a { color: var(--paper); text-decoration: underline; text-decoration-color: rgba(247, 245, 240, 0.4); text-underline-offset: 4px; }
+.contact__value a:hover { text-decoration-color: var(--paper); }
+.contact__ctas { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+.contact .btn--primary {
+  background: var(--paper); color: var(--ink); border-color: var(--paper);
+}
+.contact .btn--primary:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.contact .btn--ghost { color: var(--paper); border-color: rgba(247, 245, 240, 0.4); }
+.contact .btn--ghost:hover { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+
+.foot {
+  background: var(--ink);
+  color: rgba(247, 245, 240, 0.5);
+  font-size: 13px;
+  padding-block: 24px;
+  border-top: 1px solid rgba(247, 245, 240, 0.12);
+}
+.foot__inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding-inline: var(--gut);
+  display: flex; flex-wrap: wrap; gap: 12px 24px;
+  justify-content: space-between;
+  align-items: center;
+}
+.foot__legal { letter-spacing: -0.005em; }
+
+/* Reveal on scroll */
+.reveal { opacity: 0; transform: translateY(12px); transition: opacity 600ms ease, transform 600ms ease; }
+.reveal.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body id="top">
+
+<!-- ===========================================================
+  SVG SPRITE — Velo Working logotype (preserved from current site)
+=========================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute; width:0; height:0; overflow:hidden" aria-hidden="true">
+  <symbol id="velo-logo" viewBox="-67 125 310 50">
+    <g fill="currentColor">
+      <path d="m -63.08431,159.73324 v -11.95468 h 1.711254 1.711254 v 11.95468 11.95468 h -1.711254 -1.711254 z m 13.473111,-0.82354 c -2.7838,-2.88889 -5.165724,-5.36884 -5.293161,-5.51098 l -0.231706,-0.25846 0.549761,-1.29497 0.549763,-1.29498 7.635659,0.0174 c 4.199613,0.01 7.642322,0.0236 7.650469,0.0309 0.01335,0.0121 -1.513544,3.63653 -1.544387,3.66591 -0.0071,0.007 -1.932699,-0.0391 -4.279044,-0.10194 -2.346348,-0.0628 -4.407082,-0.11379 -4.579413,-0.11326 l -0.313328,9e-4 3.263591,3.23912 3.263592,3.23912 -0.776198,1.81972 c -0.42691,1.00085 -0.789235,1.81842 -0.80517,1.81682 -0.01595,-0.001 -2.306627,-2.36654 -5.090428,-5.25543 z m -29.666932,3.11343 c -0.40939,-1.01953 -0.73477,-1.86111 -0.72306,-1.87019 0.11854,-0.0919 6.601154,-6.26625 6.601154,-6.28717 0,-0.0155 -2.06247,-0.0194 -4.583264,-0.009 l -4.58327,0.0194 -0.74007,-1.83176 -0.74007,-1.83177 0.15342,-0.0131 c 0.34112,-0.0292 15.135529,0.27402 15.167398,0.31083 0.01891,0.0219 0.267301,0.61697 0.551984,1.32251 l 0.517602,1.28278 -3.365959,3.34337 c -1.851279,1.83885 -4.288204,4.26051 -5.415385,5.38145 -1.12719,1.12096 -2.05995,2.03766 -2.0728,2.03711 -0.0129,-4.5e-4 -0.3583,-0.83516 -0.76768,-1.85469 z m 33.041236,-14.34438 c -3.791272,-0.0741 -7.098103,-0.14163 -7.348513,-0.15003 l -0.455294,-0.0153 -0.520844,-1.3003 c -0.286465,-0.71518 -0.520846,-1.31372 -0.520846,-1.3301 0,-0.0374 3.03224,-3.04993 5.890442,-5.87067 2.539166,-2.5059 4.940976,-4.86047 4.957427,-4.84345 0.02131,0.0221 0.36701,0.85212 0.768213,1.84455 l 0.729459,1.80441 -0.207484,0.20195 c -0.114116,0.11108 -1.519848,1.44395 -3.123846,2.96192 -1.603998,1.51799 -3.013976,2.85516 -3.133281,2.9715 l -0.21692,0.21154 4.60739,-0.0328 c 3.946267,-0.028 4.611369,-0.023 4.635133,0.0354 0.249971,0.61373 1.323165,3.26153 1.390383,3.43038 l 0.09115,0.22896 -0.324674,-0.007 c -0.178575,-0.003 -3.426627,-0.0673 -7.217897,-0.14137 z m -31.875116,-0.22557 c -3.49313,-0.008 -5.89298,-0.0303 -5.89298,-0.0563 0,-0.0603 1.49413,-3.5857 1.54033,-3.63439 0.0204,-0.0215 2.08435,0.0149 4.58652,0.0808 2.502157,0.066 4.555892,0.1135 4.56385,0.1055 0.008,-0.008 -1.450958,-1.46694 -3.24204,-3.24218 l -3.2565,-3.22771 0.78062,-1.84246 0.78062,-1.84246 0.13009,0.13515 c 0.0715,0.0743 2.464747,2.55971 5.318224,5.52307 l 5.188142,5.38792 -0.06524,0.15558 c -0.03588,0.0856 -0.288522,0.6816 -0.561424,1.32453 l -0.496185,1.16895 -1.740524,-0.0119 c -0.957288,-0.007 -4.392364,-0.0174 -7.633503,-0.0243 z m 19.589652,-5.24138 c -0.712179,-0.30247 -1.305328,-0.56039 -1.318105,-0.57317 -0.01277,-0.0128 -0.0072,-3.45913 0.01238,-7.65856 l 0.03563,-7.63531 1.788624,0.75983 c 0.983744,0.41792 1.814974,0.7774 1.847178,0.79886 0.04578,0.0305 0.03288,0.98466 -0.05923,4.37741 -0.06479,2.38612 -0.117559,4.44686 -0.117282,4.57942 l 4.48e-4,0.24102 3.24018,-3.26967 3.240214,-3.26966 1.78356,0.75711 c 0.980959,0.41641 1.801446,0.77332 1.823303,0.79314 0.02185,0.0199 -2.320873,2.30888 -5.206069,5.08681 -2.885194,2.77793 -5.365114,5.16596 -5.510933,5.30673 l -0.265123,0.25597 z m -12.34695,-4.8958 c -2.942875,-2.96981 -5.356102,-5.41524 -5.362732,-5.43431 -0.0104,-0.0301 3.575683,-1.50529 3.65865,-1.505 0.0172,6e-5 1.436368,1.48058 3.153703,3.29005 1.717335,1.80948 3.14167,3.29761 3.165188,3.30699 0.02476,0.01 0.03646,-1.91609 0.02778,-4.57516 l -0.01498,-4.5922 1.828043,-0.73907 c 1.005424,-0.40649 1.833188,-0.73378 1.839475,-0.72732 0.01771,0.0182 -0.27252,15.28791 -0.290931,15.30631 -0.01962,0.0197 -2.434208,1.00013 -2.563044,1.04078 -0.07161,0.0227 -1.205843,-1.097 -5.441159,-5.37107 z"/>
+      <path d="m -19.089294,160.84717 h 6.702763 l 8.4666472,-24.69439 h -5.1152663 l -6.3499859,19.04996 h -0.705554 l -6.349986,-19.04996 h -5.115266 z m 17.9916369,0 H 15.482861 v -4.23333 H 3.4884437 v -5.9972 H 14.777307 v -4.23333 H 3.4884437 V 140.3861 H 15.482861 v -4.23332 H -1.0976571 Z m 21.1666331,0 h 16.227742 v -4.40971 H 24.655077 v -20.28468 h -4.586101 z m 29.104079,-4.05694 c -4.233324,0 -7.408317,-3.21027 -7.408317,-8.29026 0,-5.07999 3.174993,-8.29026 7.408317,-8.29026 4.233323,0 7.408316,3.21027 7.408316,8.29026 0,5.07999 -3.174993,8.29026 -7.408316,8.29026 z m 0,-20.99023 c -6.667485,0 -11.994418,5.25638 -11.994418,12.69997 0,7.4436 5.326933,12.69997 11.994418,12.69997 6.667485,0 11.994417,-5.25637 11.994417,-12.69997 0,-7.44359 -5.326932,-12.69997 -11.994417,-12.69997 z m 27.692983,25.04717 h 6.349986 l 4.233324,-16.9333 h 0.705554 l 4.233323,16.9333 h 6.349986 l 6.173599,-24.69439 h -5.115268 l -4.233324,17.28607 h -0.705554 l -4.409712,-17.28607 h -5.291655 l -4.409712,17.28607 h -0.705554 l -4.233324,-17.28607 h -5.115266 z m 41.804052,-4.05694 c -4.23332,0 -7.40831,-3.21027 -7.40831,-8.29026 0,-5.07999 3.17499,-8.29026 7.40831,-8.29026 4.23333,0 7.40832,3.21027 7.40832,8.29026 0,5.07999 -3.17499,8.29026 -7.40832,8.29026 z m 0,-20.99023 c -6.66748,0 -11.99441,5.25638 -11.99441,12.69997 0,7.4436 5.32693,12.69997 11.99441,12.69997 6.66749,0 11.99442,-5.25637 11.99442,-12.69997 0,-7.44359 -5.32693,-12.69997 -11.99442,-12.69997 z m 16.22777,25.04717 h 4.5861 v -8.46665 h 1.41111 l 7.93748,8.46665 h 5.82082 l -7.93748,-8.46665 c 3.88054,-0.17639 7.23192,-3.17499 7.23192,-7.93748 0,-4.93888 -3.38666,-8.29026 -7.76109,-8.29026 h -11.28886 z m 4.5861,-12.69997 v -7.58471 h 6.52637 c 1.76389,0 3.35138,1.5875 3.35138,3.88055 0,2.11666 -1.58749,3.70416 -3.35138,3.70416 z m 18.8736,12.69997 h 4.5861 v -11.46525 l 9.1722,11.46525 h 5.64443 l -10.05414,-12.52359 9.34859,-12.1708 h -5.64443 l -8.46665,11.11247 v -11.11247 h -4.5861 z m 21.34299,0 h 4.5861 v -24.69439 h -4.5861 z m 9.87777,0 h 4.5861 v -17.10969 h 0.70556 l 8.99581,17.10969 h 6.1736 v -24.69439 h -4.5861 v 17.10968 h -0.70556 l -8.99581,-17.10968 h -6.1736 z m 44.44988,0 h 3.52777 v -13.05275 h -10.75969 v 3.52777 h 6.17359 v 0.17639 c 0,1.58749 -2.11666,5.29165 -6.70276,5.29165 -4.23332,0 -7.40832,-3.21027 -7.40832,-8.29026 0,-5.07999 3.175,-8.29026 7.40832,-8.29026 3.3161,0 5.29165,2.11667 6.34999,4.40972 h 4.76248 C 236.53292,140.73888 232.93459,135.8 226.26711,135.8 c -6.66749,0 -11.99442,5.25638 -11.99442,12.69997 0,7.4436 5.32693,12.69997 11.99442,12.69997 2.50472,0 4.23332,-0.7761 5.46804,-1.58749 0.70556,-0.45861 1.30528,-0.98778 1.76389,-1.5875 h 0.17639 z"/>
+    </g>
+  </symbol>
+</svg>
+
+<!-- ===========================================================
+  NAV
+=========================================================== -->
+<nav class="nav" id="nav" aria-label="Primary">
+  <div class="nav__inner">
+    <a href="#top" class="nav__brand" aria-label="Velo Working — home">
+      <svg class="nav__brand-svg" aria-hidden="true"><use href="#velo-logo"/></svg>
+    </a>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="#who" class="nav__link">Who you work with</a></li>
+      <li><a href="#what" class="nav__link">What I do</a></li>
+      <li><a href="#for" class="nav__link">Who it&rsquo;s for</a></li>
+      <li><a href="#pricing" class="nav__link">Pricing</a></li>
+      <li><a href="#contact" class="nav__link nav__link--cta">Book a call</a></li>
+    </ul>
+    <button class="nav__toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ===========================================================
+  HERO
+=========================================================== -->
+<section class="hero">
+  <div class="wrap hero__inner">
+    <span class="hero__eyebrow">Independent Jodoo implementation specialist</span>
+    <h1>Jodoo implementation, done by the <span class="mark">engineer who builds it</span>.</h1>
+    <p class="hero__sub">
+      Independent Jodoo implementation specialist for Singapore &amp; Malaysia SMEs.
+      You deal with the person doing the work, not a sales team.
+    </p>
+    <div class="hero__ctas">
+      <a href="#contact" class="btn btn--primary">Book a discovery call</a>
+      <a href="#pricing" class="btn btn--ghost">Start with a paid ops diagnostic</a>
+    </div>
+    <div class="hero__meta">
+      <span><strong>One engineer.</strong> No account managers.</span>
+      <span><strong>Fixed scope, fixed fee.</strong> No subscription.</span>
+      <span><strong>No lock-in.</strong> The system is yours.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================================
+  WHO YOU WORK WITH
+=========================================================== -->
+<section class="who" id="who">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="eyebrow">Who you work with</span>
+      <h2>One operations engineer. The one who designs and builds it.</h2>
+    </div>
+
+    <div class="who__grid">
+      <div class="who__body">
+        <p>
+          Velo Working is run by <strong>Ronnie Yap</strong>, a hands-on operations and automation engineer.
+          When you hire Velo Working, you hire him. He scopes the work, designs the system, builds it,
+          and trains your team on it.
+        </p>
+        <p>
+          That means <strong>direct access to the person who designs and builds the system</strong> — no
+          account managers in between, no junior consultants learning on your job, no handoffs to a delivery
+          team you&rsquo;ve never met.
+        </p>
+        <p class="muted">
+          Velo Working Pte. Ltd. (UEN&nbsp;202609930G) is the legal wrapper. The work itself is one engineer,
+          start to finish.
+        </p>
+
+        <div class="who__trust">
+          The system is yours — documented, no-code, and it runs without me. You&rsquo;re never dependent on
+          one person to keep it alive. No lock-in.
+        </div>
+      </div>
+
+      <ul class="who__list">
+        <li>
+          <div>
+            <strong>You talk to the engineer.</strong>
+            <span>Discovery, scoping, build decisions, training — all with the same person.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>No juniors learning on your job.</strong>
+            <span>Every line of the build is done by someone who has implemented this before.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>The system runs without me.</strong>
+            <span>No-code, documented, and handed over so your team owns and edits it.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>No lock-in.</strong>
+            <span>You can take it elsewhere, edit it yourself, or hire someone else to extend it.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================================
+  WHAT I DO — three outcomes
+=========================================================== -->
+<section id="what">
+  <div class="wrap">
+    <div class="section__head section__head--center">
+      <span class="eyebrow">What I do</span>
+      <h2>Jodoo implementations that fix three recurring SME problems.</h2>
+      <p>Outcomes, not module names. The build is shaped around what&rsquo;s costing you visibility, accuracy, or institutional memory today.</p>
+    </div>
+
+    <div class="outcomes">
+      <article class="outcome">
+        <div class="outcome__num">01</div>
+        <div class="outcome__problem"><strong>Problem:</strong> Problems surface too late.</div>
+        <h3>Real-time visibility of work, parts, and quality.</h3>
+        <p>
+          See the state of every job, every part, and every quality check as it happens — not at the end
+          of the week when the spreadsheets reconcile. Issues escalate while they&rsquo;re still small.
+        </p>
+      </article>
+
+      <article class="outcome">
+        <div class="outcome__num">02</div>
+        <div class="outcome__problem"><strong>Problem:</strong> Data you can&rsquo;t trust.</div>
+        <h3>One source of truth, captured once, accurate.</h3>
+        <p>
+          The number on the report matches the number on the floor. Data is entered where the work happens,
+          once, and flows through the system. No reconciling three spreadsheets to find out what&rsquo;s real.
+        </p>
+      </article>
+
+      <article class="outcome">
+        <div class="outcome__num">03</div>
+        <div class="outcome__problem"><strong>Problem:</strong> Know-how walks out the door.</div>
+        <h3>Processes live in the system, not in people&rsquo;s heads.</h3>
+        <p>
+          When the senior storeman, the QA lead, or the production planner leaves, the process stays.
+          The system encodes how the work is done — new hires onboard against it instead of guessing.
+        </p>
+      </article>
+    </div>
+
+    <div class="areas">
+      <div class="areas__label">Operational areas covered</div>
+      <div class="areas__grid">
+        <div class="area"><strong>Procurement</strong>RFQs, POs, supplier records, GR matching.</div>
+        <div class="area"><strong>Inventory &amp; warehouse</strong>Bin-level stock, movements, stocktakes that reconcile.</div>
+        <div class="area"><strong>Production</strong>Work orders, routing, real-time progress and yield.</div>
+        <div class="area"><strong>Quality</strong>IQC, IPQC, OQC, NCR tracking with evidence attached.</div>
+        <div class="area"><strong>Maintenance</strong>PM schedules, breakdowns, parts, downtime cost.</div>
+        <div class="area"><strong>Project tracking</strong>Milestones, deliverables, hours, margin.</div>
+        <div class="area"><strong>Field service</strong>Dispatch, job cards, signed completion, billing trigger.</div>
+        <div class="area"><strong>EHS</strong>Incidents, near-misses, PTW, audits, corrective actions.</div>
+        <div class="area"><strong>Finance</strong>Invoicing, AR/AP visibility, costing tied to operations.</div>
+        <div class="area"><strong>HR &amp; payroll</strong>Attendance, leave, claims, payroll inputs.</div>
+        <div class="area"><strong>Sales &amp; CRM</strong>Pipeline, quotes, customer history, conversion.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================================
+  WHO IT'S FOR
+=========================================================== -->
+<section class="for" id="for">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="eyebrow">Who it&rsquo;s for</span>
+      <h2>SMEs running real operations.</h2>
+      <p>Not a vendor for marketing agencies or pure-software startups. This is for the people who make, move, fix, or distribute physical things.</p>
+    </div>
+
+    <div class="for__grid">
+      <div class="for__stats">
+        <div class="for__stat">
+          <div class="for__stat-num">10&ndash;100</div>
+          <div class="for__stat-label">staff</div>
+        </div>
+        <div class="for__stat">
+          <div class="for__stat-num">S$2M&ndash;20M</div>
+          <div class="for__stat-label">annual revenue</div>
+        </div>
+        <div class="for__stat">
+          <div class="for__stat-num">SG &middot; MY &middot; BN</div>
+          <div class="for__stat-label">Singapore, Malaysia, Brunei</div>
+        </div>
+      </div>
+
+      <div>
+        <h3>Industries I&rsquo;ve scoped this for</h3>
+        <ul class="for__industries">
+          <li>Precision machining</li>
+          <li>Semiconductor</li>
+          <li>O&amp;G fabrication</li>
+          <li>Marine &amp; shipyard</li>
+          <li>F&amp;B manufacturing</li>
+          <li>Trading &amp; distribution</li>
+          <li>Engineering services</li>
+        </ul>
+        <p class="for__geo">
+          On-site visits across Singapore and West Malaysia. Remote build for everywhere else in region.
+        </p>
+        <!-- TODO: add proof -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================================
+  PRICING
+=========================================================== -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="section__head section__head--center">
+      <span class="eyebrow">Pricing</span>
+      <h2>Fixed scope. Fixed fee. No subscription.</h2>
+      <p>You know the number before the work starts. The diagnostic is a low-commitment way to find out if a build is worth doing at all.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <article class="pricing-card">
+        <div class="pricing-card__badge">Start here</div>
+        <div class="pricing-card__name">Paid ops diagnostic</div>
+        <div class="pricing-card__price">S$800&ndash;1,500</div>
+        <div class="pricing-card__note">~2 days. Credits toward a full build.</div>
+        <div class="pricing-card__desc">
+          I sit with your operations team, map the actual flow, and write a one-page diagnostic:
+          <strong>what to fix, what to leave alone, what the build would cost.</strong> Honest answer — even
+          if the answer is &ldquo;you don&rsquo;t need this yet.&rdquo;
+        </div>
+        <a href="#contact" class="btn btn--ghost pricing-card__cta">Start with a diagnostic</a>
+      </article>
+
+      <article class="pricing-card pricing-card--featured">
+        <div class="pricing-card__badge">Most builds</div>
+        <div class="pricing-card__name">Standard implementation</div>
+        <div class="pricing-card__price">S$3,500&ndash;15,000</div>
+        <div class="pricing-card__note">Fixed scope. One-time. No subscription.</div>
+        <div class="pricing-card__desc">
+          A scoped Jodoo build covering one or two operational areas end-to-end. Includes design,
+          configuration, data migration, user training, and <strong>handover documentation so your team
+          owns and edits it.</strong>
+        </div>
+        <a href="#contact" class="btn btn--primary pricing-card__cta">Book a discovery call</a>
+      </article>
+
+      <article class="pricing-card">
+        <div class="pricing-card__badge">Custom</div>
+        <div class="pricing-card__name">Custom &amp; hardware</div>
+        <div class="pricing-card__price">S$15,000&ndash;30,000</div>
+        <div class="pricing-card__note">Multi-area, integrations, hardware tie-in.</div>
+        <div class="pricing-card__desc">
+          When the build spans several operational areas, integrates with existing systems, or ties into
+          shop-floor hardware (scanners, scales, sensors, label printers). <strong>Scoped to a fixed fee
+          before any work starts.</strong>
+        </div>
+        <a href="#contact" class="btn btn--ghost pricing-card__cta">Discuss scope</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================================
+  CONTACT
+=========================================================== -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="section__head">
+      <span class="eyebrow" style="color: rgba(247, 245, 240, 0.6);">Contact</span>
+      <h2>Want to see if this fits your operation?</h2>
+      <p class="contact__sub">
+        Reach out directly. You&rsquo;ll talk to the engineer — not a form, not a sales rep, not a chatbot.
+      </p>
+    </div>
+
+    <div class="contact__rows">
+      <div class="contact__row">
+        <div class="contact__label">Email</div>
+        <div class="contact__value"><a href="mailto:ronnie.yap@veloworking.com">ronnie.yap@veloworking.com</a></div>
+      </div>
+      <div class="contact__row">
+        <div class="contact__label">Phone &middot; WhatsApp</div>
+        <div class="contact__value"><a href="tel:+6598943004">+65 9894 3004</a></div>
+      </div>
+      <div class="contact__row">
+        <div class="contact__label">Office</div>
+        <div class="contact__value">Velo Working Pte. Ltd.<br/>540 Sims Ave #03-05, Singapore 387603</div>
+      </div>
+      <div class="contact__row">
+        <div class="contact__label">UEN</div>
+        <div class="contact__value">202609930G</div>
+      </div>
+    </div>
+
+    <div class="contact__ctas">
+      <a href="mailto:ronnie.yap@veloworking.com?subject=Discovery%20call" class="btn btn--primary">Book a discovery call</a>
+      <a href="mailto:ronnie.yap@veloworking.com?subject=Paid%20ops%20diagnostic" class="btn btn--ghost">Start with a paid ops diagnostic</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot__inner">
+    <div class="foot__legal">&copy; Velo Working Pte. Ltd. &middot; UEN 202609930G &middot; Singapore</div>
+    <div>Independent Jodoo implementation &middot; SG &middot; MY &middot; BN</div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Mobile nav toggle
+  var nav = document.getElementById('nav');
+  var toggle = document.getElementById('navToggle');
+  if (toggle && nav) {
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('nav--open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Close on link click (mobile)
+    nav.querySelectorAll('.nav__link').forEach(function (a) {
+      a.addEventListener('click', function () {
+        nav.classList.remove('nav--open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // Reveal on scroll
+  if ('IntersectionObserver' in window) {
+    var els = document.querySelectorAll('.reveal');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  }
+})();
+</script>
+
+</body>
+</html>
